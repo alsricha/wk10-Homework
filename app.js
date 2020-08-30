@@ -10,94 +10,52 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-function askQuestions() {
-    inquirer.prompt([
-        
-        { 
-            type: "input",
-            message: "What is your name?",
-            name: "name"
+const teamMembers = [];
 
-        },
-
+function managerInputs() {
+    inquirer
+      .prompt([
         {
-            type: "number",
-            message: "What is your id?",
-            name: "id"
+          type: "input",
+          name: "name",
+          message: "What is your manager's name?",
         },
         {
-            type: "list",
-            message: "What is your role",
-            name: "role",
-            choices: ["Engineer", "Intern", "Manager"]
-        }
-    ])
-
-    .then (
-        function({ name, id, email, role }) {
-            switch (role) {
-                case "Engineer":
-                    inquirer.prompt({
-                        type: "input",
-                        message: "What is your Github username?",
-                        name: "github"
-                    }).then (
-                        function({ github }) {
-                            renderEngineer(name, id, email, github)
-                            addOtherMembers()
-                        }
-                    )
-
-                break
-                case "Intern":
-                    inquirer.prompt({
-                        type: "input",
-                        message: "What school do you attend?",
-                        name: "school"
-                    }).then(
-                        function({ school }) {
-                            renderIntern(name, id, email, school)
-                            addOtherMembers()
-                        }
-                    )
-                break
-                case "Manager":
-                    inquirer.prompt({
-                        type: "input",
-                        message: "What is your Office Number?",
-                        name: "officeNumber"
-                    }).then(
-                        function ({ officeNumber }) {
-                            renderManager(name, id, email, officeNumber)
-                            addOtherMembers()
-                        }
-                    )
-                break
+          type: "input",
+          name: "id",
+          message: "What is your manager's id?",
+        },
+        {
+          type: "input",
+          name: "email",
+          message: "What is your manager's email address?",
+          validate: (answer) => {
+            const emailCheck = answer.match(/\S+@\S+\.\S+/);
+            if (emailCheck) {
+              return true;
             }
-        })
-}
+            return "Please enter a valid email address";
+          },
+        },
+        {
+          type: "input",
+          name: "officeNumber",
+          message: "What is your manager's phone number?",
+        },
+      ])
+      .then(function (answers) {
+        const manager = new Manager(
+          answers.name,
+          answers.id,
+          answers.email,
+          answers.officeNumber
+        );
+        teamMembers.push(manager);
+        teamPrompt();
+      });
+  }
 
-function addOtherMembers() {
-    inquirer.prompt({
-        type: "confirm",
-        message: 'Add other Team Members?',
-        name: "addOtherMembers"
-    }).then(
-        function({addOtherMembers}) {
-            console.log("add other members", addOtherMembers)
-            if (addOtherMembers) {
-                askQuestions()
-            } else {
-                renderHTML()
-            }
-        }
-    )
-    .catch(err => {
-        console.log("Error adding other members", err)
-        throw err
-    })
-}
-askQuestions()
+
 
 
 // Write code to use inquirer to gather information about the development team members,
