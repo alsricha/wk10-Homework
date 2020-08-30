@@ -55,7 +55,53 @@ function managerInputs() {
       });
   }
 
-
+  function engineerInputs() {
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "name",
+          message: "What is your engineer's name?",
+        },
+        {
+          type: "input",
+          name: "id",
+          message: "What is your engineer's id?",
+        },
+        {
+          type: "input",
+          name: "email",
+          message: "What is your engineer's email address?",
+          validate: (answer) => {
+            const emailCheck = answer.match(/\S+@\S+\.\S+/);
+            if (emailCheck) {
+              return true;
+            }
+            return "Please enter a valid email address";
+          },
+        },
+        {
+          type: "input",
+          name: "github",
+          message: "What is your engineers's Github username?",
+        },
+      ])
+      .then(function (answers) {
+        const engineer = new Engineer(
+          answers.name,
+          answers.id,
+          answers.email,
+          answers.github
+        );
+        teamMembers.push(engineer);
+      })
+      .then(function newCall() {
+        console.log("Would you like to add another Member?");
+        teamPrompt();
+      });
+  }
+  
+  
 
 
 // Write code to use inquirer to gather information about the development team members,
