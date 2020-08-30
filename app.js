@@ -68,7 +68,7 @@ function askQuestions() {
                         name: "officeNumber"
                     }).then(
                         function ({ officeNumber }) {
-                            generateManager(name, id, email, officeNumber)
+                            renderManager(name, id, email, officeNumber)
                             addOtherMembers()
                         }
                     )
@@ -76,6 +76,28 @@ function askQuestions() {
             }
         })
 }
+
+function addOtherMembers() {
+    inquirer.prompt({
+        type: "confirm",
+        message: 'Add other Team Members?',
+        name: "addOtherMembers"
+    }).then(
+        function({addOtherMembers}) {
+            console.log("add other members", addOtherMembers)
+            if (addOtherMembers) {
+                askQuestions()
+            } else {
+                renderHTML()
+            }
+        }
+    )
+    .catch(err => {
+        console.log("Error adding other members", err)
+        throw err
+    })
+}
+askQuestions()
 
 
 // Write code to use inquirer to gather information about the development team members,
