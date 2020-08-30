@@ -101,7 +101,51 @@ function managerInputs() {
       });
   }
   
-  
+  function internInputs() {
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "name",
+          message: "What is your intern's name?",
+        },
+        {
+          type: "input",
+          name: "id",
+          message: "What is your intern's id?",
+        },
+        {
+          type: "input",
+          name: "email",
+          message: "What is your intern's email address?",
+          validate: (answer) => {
+            const emailCheck = answer.match(/\S+@\S+\.\S+/);
+            if (emailCheck) {
+              return true;
+            }
+            return "Please enter a valid email address.";
+          },
+        },
+        {
+          type: "input",
+          name: "school",
+          message: "What school is your intern attending?",
+        },
+      ])
+      .then(function (answers) {
+        const intern = new Intern(
+          answers.name,
+          answers.id,
+          answers.email,
+          answers.school
+        );
+        teamMembers.push(intern);
+      })
+      .then(function newCall() {
+        console.log("Would you like to add another Member?");
+        teamPrompt();
+      });
+  }
 
 
 // Write code to use inquirer to gather information about the development team members,
