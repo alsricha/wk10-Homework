@@ -43,14 +43,38 @@ function askQuestions() {
                         name: "github"
                     }).then (
                         function({ github }) {
-                            generateEngineer(name, id, email, github)
+                            renderEngineer(name, id, email, github)
                             addOtherMembers()
                         }
                     )
-            }
-        }
-    )
 
+                break
+                case "Intern":
+                    inquirer.prompt({
+                        type: "input",
+                        message: "What school do you attend?",
+                        name: "school"
+                    }).then(
+                        function({ school }) {
+                            renderIntern(name, id, email, school)
+                            addOtherMembers()
+                        }
+                    )
+                break
+                case "Manager":
+                    inquirer.prompt({
+                        type: "input",
+                        message: "What is your Office Number?",
+                        name: "officeNumber"
+                    }).then(
+                        function ({ officeNumber }) {
+                            generateManager(name, id, email, officeNumber)
+                            addOtherMembers()
+                        }
+                    )
+                break
+            }
+        })
 }
 
 
