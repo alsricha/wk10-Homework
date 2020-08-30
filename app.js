@@ -147,6 +147,39 @@ function managerInputs() {
       });
   }
 
+  function teamPrompt() {
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "role",
+          message: "Please Choose Which Type of Employee to Add.",
+          choices: ["Engineer", "Intern", "No More Employees"],
+        },
+      ])
+      .then((answers) => {
+        switch (answers.role) {
+          case "Engineer":
+            engineerInputs();
+            break;
+          case "Intern":
+            internInputs();
+            break;
+          case "No More Employees":
+            console.log("Employee profiles are done!");
+            console.log(JSON.stringify(teamMembers));
+            fs.writeFile(outputPath, render(teamMembers), "utf-8", (err) => {
+              if (err) throw err;
+              console.log(err);
+            });
+        }
+      });
+  }
+  
+  managerInputs();
+
+  
+
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
