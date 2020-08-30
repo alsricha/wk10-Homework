@@ -147,26 +147,27 @@ function managerInputs() {
       });
   }
 
-  function teamPrompt() {
+  function createTeam() {
     inquirer
       .prompt([
         {
           type: "list",
-          name: "role",
-          message: "Please Choose Which Type of Employee to Add.",
-          choices: ["Engineer", "Intern", "No More Employees"],
+          name: "teamMember",
+          message: "Please select a team member to add",
+          choices: ["Engineer", "Intern", "None"],
         },
+
       ])
       .then((answers) => {
-        switch (answers.role) {
+        switch (answers.teamMember) {
           case "Engineer":
             engineerInputs();
             break;
           case "Intern":
             internInputs();
             break;
-          case "No More Employees":
-            console.log("Employee profiles are done!");
+          case "None":
+            console.log("Team members have been added successfully!");
             console.log(JSON.stringify(teamMembers));
             fs.writeFile(outputPath, render(teamMembers), "utf-8", (err) => {
               if (err) throw err;
@@ -177,8 +178,6 @@ function managerInputs() {
   }
   
   managerInputs();
-
-  
 
 
 // Write code to use inquirer to gather information about the development team members,
