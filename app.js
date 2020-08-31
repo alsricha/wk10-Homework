@@ -75,9 +75,9 @@ function buildTeam() {
                     questionsIntern();
                 break;
 
-                default:
-                    console.log("building team");
-                    buildTeam();
+                case "None":
+                    console.log("You have successfully added all team members");
+                  //  questionsManager() or teamMembers()
 
         }
     })
@@ -158,7 +158,7 @@ function questionsIntern() {
 };
 
 
-function buildTeam() {
+function teamMembers() {
     if(!fs.existsSync(OUTPUT_DIR)){
         fs.mkdirSync(OUTPUT_DIR)
     }
