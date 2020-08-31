@@ -54,28 +54,33 @@ function questionsManager() {
 };
 
 function buildTeam() {
-    inquirer.prompt([
-        {
-            type: "list",
-            name: "teamMember",
-            message: "Please select a team member to add",
-            choices: ["Engineer", "Intern", "None"]
+    inquirer
+        .prompt([
+            {
+                type: "list",
+                name: "teamMember",
+                message: "Please select a team member to add",
+                choices: ["Engineer", "Intern", "None"],
+            },
+        ])
+        .then(function(answers) {
+            switch(answers.teamMember) {
+                case "Manager":
+                    questionsManager();
+                break;
+                case "Engineer":
+                    questionsEngineer();
+                break;
+                case  "Intern":
+                    questionsIntern();
+                break;
 
-        },
-    ]).then(function(answers) {
-        switch(answers.teamMember) {
-            case "Engineer":
-                questionsEngineer();
-                break;
-            case "Intern":
-                questionsIntern();
-                break;
-            case "None":
-                buildTeam();
-            default:
-                break;
+                default:
+                    console.log("building team");
+                    buildTeam();
+
         }
-    });
+    })
 };
 
 function questionsEngineer() {
@@ -152,15 +157,16 @@ function questionsIntern() {
     });
 };
 
-questionsManager();
 
 function buildTeam() {
-    const htmlString = render(teamMembers);
-    fs.writeFile(outputPath, htmlString, function(err) {
-        if(err) console.log(err)
-    }) 
+    if(!fs.existsSync(OUTPUT_DIR)){
+        fs.mkdirSync(OUTPUT_DIR)
+    }
+    fs.writeFile(outputPath, render(team), "utf-8")
+    }
+
+questionsManager();
     
-}
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
