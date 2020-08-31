@@ -1,4 +1,166 @@
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
+const inquirer = require("inquirer");
+const path = require("path");
+const fs = require("fs");
 
+const OUTPUT_DIR = path.resolve(__dirname, "output");
+const outputPath = path.join(OUTPUT_DIR, "team.html");
+
+const render = require("./lib/htmlRenderer");
+
+var teamMembers = []
+
+function questionsManager() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "name",
+            message: "What is your name?",
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "What is your id number?",
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is your email address?",
+            validate: (answer) => {
+                const emailValidation = answer.match(/\S+@\S+\.\S+/);
+                if (emailValidation) {
+                return true;
+            }
+                return "Please enter a valid email address";
+            },
+        },
+
+        {
+            type: "input",
+            name: "officeNumber",
+            message: "What is your office number?"
+        },
+
+     
+    ]).then(function(answers) {
+        const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
+        teamMembers.push(manager);
+
+        buildTeam();
+    });
+    
+};
+
+function buildTeam() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "teamMember",
+            message: "Please select a team member to add",
+            choices: ["Engineer", "Intern", "None"]
+
+        },
+    ]).then(function(answers) {
+        switch(answers.teamMember) {
+            case "Engineer":
+                questionsEngineer();
+                break;
+            case "Intern":
+                questionsIntern();
+                break;
+            case "None":
+                buildTeam();
+            default:
+                break;
+        }
+    });
+};
+
+function questionsEngineer() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "name",
+            message: "What is the name of the engineer?",
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "What is the engineer's id?",
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is the engineer's email address?",
+            validate: (answer) => {
+                const emailValidation = answer.match(/\S+@\S+\.\S+/);
+                if (emailValidation) {
+              return true;
+            }
+            return "Please enter a valid email address";
+          },
+        },
+        {
+            type: "input",
+            name: "gitHub",
+            message: "What is the engineer's github account?",
+        },
+    ]).then(function(answers) {
+        const engineer = new Engineer(answers.name, answers.id, answers.email, answers.gitHub)
+        teamMembers.push(engineer);
+
+        buildTeam();
+    });
+};
+
+function questionsIntern() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "name",
+            message: "What is the intern's name?",
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "What is the intern's id number?",
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is the intern's email address?",
+            validate: (answer) => {
+                const emailValidation = answer.match(/\S+@\S+\.\S+/);
+                if (emailValidation) {
+                    return true;
+                }
+                return "Please enter a valid email address.";
+          },
+        },
+        {
+            type: "input",
+            name: "school",
+            message: "What school is the intern attending?",
+        },
+    ]).then(function(answers) {
+        const intern = new Intern(answers.name, answers.id, answers.email, answers.school)
+        teamMembers.push(intern);
+
+        buildTeam();
+    });
+};
+
+questionsManager();
+
+function buildTeam() {
+    const htmlString = render(teamMembers);
+    fs.writeFile(outputPath, htmlString, function(err) {
+        if(err) console.log(err)
+    }) 
+    
+}
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
