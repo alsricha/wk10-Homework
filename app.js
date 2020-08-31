@@ -10,7 +10,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-var teamMembers = []
+const team = [];
 
 function questionsManager() {
     inquirer.prompt([
@@ -45,15 +45,15 @@ function questionsManager() {
 
      
     ]).then(function(answers) {
-        const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
-        teamMembers.push(manager);
+        const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber);
+        team.push(manager);
 
-        buildTeam();
+        addEmployee();
     });
     
 };
 
-function buildTeam() {
+function addEmployee() {
     inquirer
         .prompt([
             {
@@ -75,10 +75,12 @@ function buildTeam() {
                     questionsIntern();
                 break;
 
-                case "None":
+                default:
                     console.log("You have successfully added all team members");
-                  //  questionsManager() or teamMembers()
-
+                    fs.writeFile(outputPath, render(team), "utf-8",(err) => {
+                        if (err) throw err;
+                    })
+                
         }
     })
 };
@@ -113,10 +115,10 @@ function questionsEngineer() {
             message: "What is the engineer's github account?",
         },
     ]).then(function(answers) {
-        const engineer = new Engineer(answers.name, answers.id, answers.email, answers.gitHub)
-        teamMembers.push(engineer);
+        const engineer = new Engineer(answers.name, answers.id, answers.email, answers.gitHub);
+        team.push(engineer);
 
-        buildTeam();
+        addEmployee();
     });
 };
 
@@ -150,20 +152,21 @@ function questionsIntern() {
             message: "What school is the intern attending?",
         },
     ]).then(function(answers) {
-        const intern = new Intern(answers.name, answers.id, answers.email, answers.school)
-        teamMembers.push(intern);
+        const intern = new Intern(answers.name, answers.id, answers.email, answers.school);
+        team.push(intern);
 
-        buildTeam();
+        addEmployee();
     });
 };
 
-
-function teamMembers() {
+//Note: Not sure why this code block below is not working
+/* 
+function createTeam() {
     if(!fs.existsSync(OUTPUT_DIR)){
         fs.mkdirSync(OUTPUT_DIR)
     }
     fs.writeFile(outputPath, render(team), "utf-8")
-    }
+    } */
 
 questionsManager();
     
